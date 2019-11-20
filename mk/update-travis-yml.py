@@ -49,6 +49,7 @@ compilers = {
     "i686-unknown-linux-gnu" : linux_compilers,
     "x86_64-unknown-linux-gnu" : linux_compilers,
     "x86_64-apple-darwin" : osx_compilers,
+    "wasm32-wasi" : [ "" ]
 }
 
 feature_sets = [
@@ -65,6 +66,7 @@ modes = [
 oss = [
     "osx",
     "linux",
+    "wasi",
 ]
 
 targets = {
@@ -79,6 +81,9 @@ targets = {
         "i686-unknown-linux-gnu",
         "arm-unknown-linux-gnueabihf",
     ],
+    "wasi" : [
+        "wasm32-wasi"
+    ]
 }
 
 def format_entries():
@@ -116,7 +121,7 @@ def format_entry(os, target, compiler, rust, mode, features):
     target_words = target.split("-")
     arch = target_words[0]
     vendor = target_words[1]
-    sys = target_words[2]
+    sys = target_words[2] if 2 < len(target_words) else ""
 
     # Currently kcov only runs on Linux.
     #
@@ -152,6 +157,14 @@ def format_entry(os, target, compiler, rust, mode, features):
         components:
         - android-21
         - build-tools-26.0.2"""
+    elif os == "wasi":
+        abi = sys
+        sys = "wasi"
+        template += """
+      before_install:
+        - cargo install cargo-wasi
+      script:
+        - cargo wasi test"""
     else:
         abi = target_words[3]
 

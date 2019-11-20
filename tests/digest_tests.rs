@@ -33,18 +33,19 @@
 
 use ring::{digest, test, test_file};
 
-#[cfg(target_arch = "wasm32")]
+#[cfg_attr(all(target_arch = "wasm32", not(target_os="wasi")), wasm_bindgen_test)]
+
+#[cfg(wasm_bindgen_test)]
 use wasm_bindgen_test::wasm_bindgen_test;
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(wasm_bindgen_test)]
 use wasm_bindgen_test::wasm_bindgen_test_configure;
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(wasm_bindgen_test)]
 wasm_bindgen_test_configure!(run_in_browser);
 
 /// Test vectors from BoringSSL, Go, and other sources.
-#[cfg_attr(not(target_arch = "wasm32"), test)]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(wasm_bindgen_test), test)]
 fn digest_misc() {
     test::run(test_file!("digest_tests.txt"), |section, test_case| {
         assert_eq!(section, "");
@@ -102,11 +103,12 @@ mod digest_shavs {
                 use super::{run_known_answer_test, run_monte_carlo_test};
                 use ring::{digest, test_file};
 
-                #[cfg(target_arch = "wasm32")]
+                #[cfg_attr(all(target_arch = "wasm32", not(target_os="wasi")), wasm_bindgen_test)]
+
+                #[cfg(wasm_bindgen_test)]
                 use wasm_bindgen_test::wasm_bindgen_test;
 
-                #[cfg_attr(not(target_arch = "wasm32"), test)]
-                #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+                #[cfg_attr(not(wasm_bindgen_test), test)]
                 fn short_msg_known_answer_test() {
                     run_known_answer_test(
                         &digest::$algorithm_name,
@@ -118,8 +120,7 @@ mod digest_shavs {
                     );
                 }
 
-                #[cfg_attr(not(target_arch = "wasm32"), test)]
-                #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+                #[cfg_attr(not(wasm_bindgen_test), test)]
                 fn long_msg_known_answer_test() {
                     run_known_answer_test(
                         &digest::$algorithm_name,
@@ -131,8 +132,7 @@ mod digest_shavs {
                     );
                 }
 
-                #[cfg_attr(not(target_arch = "wasm32"), test)]
-                #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+                #[cfg_attr(not(wasm_bindgen_test), test)]
                 fn monte_carlo_test() {
                     run_monte_carlo_test(
                         &digest::$algorithm_name,
@@ -339,8 +339,7 @@ test_large_digest!(
 // TODO: test_large_digest!(digest_test_large_digest_sha512_256,
 //                            digest::SHA512_256, 256 / 8, [ ... ]);
 
-#[cfg_attr(not(target_arch = "wasm32"), test)]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(wasm_bindgen_test), test)]
 fn test_fmt_algorithm() {
     assert_eq!("SHA1", &format!("{:?}", digest::SHA1_FOR_LEGACY_USE_ONLY));
     assert_eq!("SHA256", &format!("{:?}", digest::SHA256));
@@ -349,8 +348,7 @@ fn test_fmt_algorithm() {
     assert_eq!("SHA512_256", &format!("{:?}", digest::SHA512_256));
 }
 
-#[cfg_attr(not(target_arch = "wasm32"), test)]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(wasm_bindgen_test), test)]
 fn digest_test_fmt() {
     assert_eq!(
         "SHA1:b7e23ec29af22b0b4e41da31e868d57226121c84",

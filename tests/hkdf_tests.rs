@@ -32,17 +32,18 @@
 
 use ring::{digest, error, hkdf, test, test_file};
 
-#[cfg(target_arch = "wasm32")]
+#[cfg_attr(all(target_arch = "wasm32", not(target_os="wasi")), wasm_bindgen_test)]
+
+#[cfg(wasm_bindgen_test)]
 use wasm_bindgen_test::wasm_bindgen_test;
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(wasm_bindgen_test)]
 use wasm_bindgen_test::wasm_bindgen_test_configure;
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(wasm_bindgen_test)]
 wasm_bindgen_test_configure!(run_in_browser);
 
-#[cfg_attr(not(target_arch = "wasm32"), test)]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(wasm_bindgen_test), test)]
 fn hkdf_tests() {
     test::run(test_file!("hkdf_tests.txt"), |section, test_case| {
         assert_eq!(section, "");

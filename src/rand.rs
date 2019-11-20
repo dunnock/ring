@@ -297,7 +297,7 @@ mod sysrand_chunk {
 #[cfg(any(
     target_os = "android",
     target_os = "linux",
-    target_arch = "wasm32",
+    all(target_arch = "wasm32", not(target_os="wasi")),
     windows
 ))]
 mod sysrand {
@@ -311,6 +311,16 @@ mod sysrand {
             read_len += chunk_len;
         }
         Ok(())
+    }
+}
+
+#[cfg(target_os="wasi")]
+mod sysrand {
+    use wasi::wasi_unstable::random_get;
+    use crate::error;
+
+    pub fn fill(dest: &mut [u8]) -> Result<(), error::Unspecified> {
+        random_get(dest).or(Err(error::Unspecified))
     }
 }
 

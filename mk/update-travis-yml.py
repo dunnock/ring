@@ -80,10 +80,8 @@ targets = {
         "aarch64-unknown-linux-gnu",
         "i686-unknown-linux-gnu",
         "arm-unknown-linux-gnueabihf",
-    ],
-    "wasi" : [
         "wasm32-wasi"
-    ]
+    ],
 }
 
 def format_entries():
@@ -164,7 +162,9 @@ def format_entry(os, target, compiler, rust, mode, features):
       before_install:
         - cargo install cargo-wasi
       script:
-        - cargo wasi test"""
+        - cargo build --package wasiringrunner
+        - cargo wasi build --tests
+        - cargo run --package wasiringrunner -- target/wasm32-wasi/debug/*.wasm"""
     else:
         abi = target_words[3]
 

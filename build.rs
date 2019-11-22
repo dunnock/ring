@@ -247,6 +247,7 @@ const MSVC: &str = "msvc";
 const MSVC_OBJ_OPT: &str = "/Fo";
 const MSVC_OBJ_EXT: &str = "obj";
 
+#[allow(dead_code)]
 fn main() {
     if let Ok(package_name) = std::env::var("CARGO_PKG_NAME") {
         if package_name == "ring" {
@@ -258,7 +259,8 @@ fn main() {
     pregenerate_asm_main();
 }
 
-fn ring_build_rs_main() {
+/// Build main module
+pub fn ring_build_rs_main() {
     use std::env;
 
     for (key, value) in env::vars() {
@@ -326,6 +328,7 @@ fn pregenerate_asm_main() {
         }
     }
 }
+
 
 struct Target {
     arch: String,

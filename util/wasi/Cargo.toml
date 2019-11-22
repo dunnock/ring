@@ -1,0 +1,18 @@
+[package]
+name = "wasiringrunner"
+version = "0.0.1"
+#build = "build.rs"
+workspace = "../.."
+edition = "2018"
+
+[dependencies]
+ring = { path = "../.." }
+serde = "1"
+wasmer-wasi = "0.10"
+wasmer-runtime-core = "0.10"
+wasmer-runtime = "0.10"
+slice_as_array = "1.1"
+
+# Keep this in sync with `[build-dependencies]` in ../Cargo.toml.
+[build-dependencies]
+cc = { version = "1.0.37", default-features = false }

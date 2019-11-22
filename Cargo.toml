@@ -300,6 +300,9 @@ include = [
 [lib]
 name = "ring"
 
+[workspace]
+members = ["util/wasi"]
+
 [dependencies]
 untrusted = { version = "0.7.0" }
 
